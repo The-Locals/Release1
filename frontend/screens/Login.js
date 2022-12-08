@@ -11,13 +11,14 @@ import Submit from '../components/Submit';
 import Account from '../components/Account';
 
 const Login = props => {
+  
   React.useEffect(() => {
     GoogleSignin.configure({
       webClientId:
         '126517507975-hkmu5h3t306dnfjq4p6ppu1ogd8v2ilg.apps.googleusercontent.com',
       offlineAccess: true,
     });
-  }, []);;
+  }, []);
 
   const [email, setEmail] = useState('');
   const [passwd, setPasswd] = useState('');
