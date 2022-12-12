@@ -40,7 +40,7 @@ const Login = props => {
         if (resBody.statusCode == 200) {
           props.navigation.navigate('Map');
         } else if (resBody.statusCode == 403) {
-          // user entered the wrong credentials. TODO: add a UI for this.
+          // TODO user entered the wrong credentials. add a UI for this.
         }
       })
       .catch(err => {
