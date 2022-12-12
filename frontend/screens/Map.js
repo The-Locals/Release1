@@ -12,6 +12,8 @@ import MapView, { Marker } from 'react-native-maps';
 import Info_card from '../components/Info_card';
 import { Root, SPSheet } from 'react-native-popup-confirm-toast'
 import Submit from '../components/Submit'
+import SoundPlayer from 'react-native-sound-player'
+
 const Map = () =>
 {
 
@@ -20,14 +22,15 @@ const Map = () =>
   const [photo, setPhoto] = useState('')
   const component = (props) =>
   {
-
+    key = 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M'
+    url = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+photo+'&sensor=false&maxheight=500&maxwidth=500&key='+key
     
-    console.log('\nPhoto\n',photo)
     //hook or class 
     return (<View>
         <Text style={styles.title}>{title}</Text>
-        <Image style={styles.photo} source={{uri: 'https://maps.googleapis.com/maps/api/place/photo?photoreference=AW30NDy03h8GOH-NLPvmyMimIMrqxikTzNlv7Qor3mxcQOCXbUKrYVxqyT2k8Vgvs855sRwrMTULO2Z81VZpIfaHtutuzFudu94HIL9e6cj_DTuljEkWvtTMxr1B505XtefhFMiMqriGv1--dzhG63vGtfoJqMc7Dpbl_B1BNEtkUKIvrusU&sensor=false&maxheight=500&maxwidth=500&key=AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M',}}></Image>
+        <Image style={styles.photo} source={{uri: url,}}></Image>
         <Submit title="Travel Guides" color="#0148a4" handleSubmit={fetchAudio}></Submit>
+        
       </View>);
     // place.photos.forEach(function (placePhoto)
     // {
@@ -38,8 +41,16 @@ const Map = () =>
     // });
   };
 
-  const fetchAudio = () =>{
-    
+  const fetchAudio = async () =>{
+    try {
+      console.log("Trying to play audio")
+      // play the file tone.mp3
+      SoundPlayer.playSoundFile('tune', 'mp3')
+      // or play from url
+      //SoundPlayer.playUrl('https://storage.googleapis.com/guidify_bucket/12345.mpeg')
+  } catch (e) {
+      console.log(`cannot play the sound file`, e)
+  }
   }
 
   const openModal = () =>
@@ -139,8 +150,8 @@ const styles = StyleSheet.create({
   },
 
   photo: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
   },
 
   container: {
