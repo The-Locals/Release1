@@ -2,7 +2,7 @@
 // https://aboutreact.com/react-native-map-example/// Import React
 import React, {useState} from 'react';
 // Import required components
-import {SafeAreaView, StyleSheet, TextInput, View, Modal, Text} from 'react-native'; // Import Map and Marker
+import {SafeAreaView, StyleSheet, TextInput, View, Modal, Text, TouchableOpacity} from 'react-native'; // Import Map and Marker
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {StatusBar} from 'react-native';
 //import MapContainer from './components/MapInput';
@@ -10,9 +10,19 @@ import MapView, {Marker} from 'react-native-maps';
 //import MainContainer from './containers/tabContainer';
 //import { NavigationContainer } from '@react-navigation/native';
 import Info_card from '../components/Info_card';
+import { Root, SPSheet } from 'react-native-popup-confirm-toast'
+
 const Map = () => {
 
   const [modalOpen, setModalOpen] = useState(true);
+
+  const component = (props) => {
+    //hook or class 
+    return (<Text>Hi, SekizliPenguen</Text>);
+    
+    //props.spSheet.hide();
+    //props.spSheet.setHeight(150,()=>alert('nice'));
+};
 
   const markerClick = (e) => {
 
@@ -40,12 +50,34 @@ const Map = () => {
             onDragEnd={e => alert(JSON.stringify(e.nativeEvent.coordinate))}
             title={'Test Marker'}
             description={'This is a description of the marker'}
-            onPress={() => markerClick(this)}
+            // modal open on this
+            onPress={() => {
+              const spSheet = SPSheet;
+              spSheet.show({
+                  component: () => component({...this.props, spSheet}),
+                  dragFromTopOnly: true,
+                  onCloseComplete: () => {
+                      alert('onCloseComplete');
+                  },
+                  onOpenComplete: () => {
+                      alert('onOpenComplete');
+                  },
+                  height:260
+              });
+          }}
           />
 
         </MapView>
 
-
+        <Root>
+    <View>
+        <TouchableOpacity
+            
+        >
+            <Text>Open Popup Message</Text>
+        </TouchableOpacity>
+    </View>
+</Root>
 
         <View style={styles.searchContainer}>
           <GooglePlacesAutocomplete
