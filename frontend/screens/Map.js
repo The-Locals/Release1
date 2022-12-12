@@ -43,13 +43,20 @@ const Map = () =>
 
   const fetchAudio = async () =>{
     try {
-      console.log("Trying to play audio")
+      console.log("Trying to play audio");
       // play the file tone.mp3
-      SoundPlayer.playSoundFile('tune', 'mp3')
+      SoundPlayer.playSoundFile('tune', 'mp3');
+      console.log("Playing");
       // or play from url
       //SoundPlayer.playUrl('https://storage.googleapis.com/guidify_bucket/12345.mpeg')
+      try {
+            const info = await SoundPlayer.getInfo() // Also, you need to await this because it is async
+            console.log('getInfo', info) // {duration: 12.416, currentTime: 7.691}
+          } catch (e) {
+            console.log('There is no song playing', e)
+          }
   } catch (e) {
-      console.log(`cannot play the sound file`, e)
+      console.log(`cannot play the sound file`, e);
   }
   }
 
