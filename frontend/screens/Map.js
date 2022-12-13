@@ -2,10 +2,9 @@
 // https://aboutreact.com/react-native-map-example/// Import React
 import React, { useState } from 'react';
 // Import required components
-import { SafeAreaView, StyleSheet, TextInput, View, Modal, Text, TouchableOpacity, Image, ScrollView } from 'react-native'; // Import Map and Marker
+import { Text, SafeAreaView, StyleSheet, TextInput, View, Text, TouchableOpacity,  Image, ScrollView, PermissionsAndroid } from 'react-native';// Import Map and Marker
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { StatusBar } from 'react-native';
-//import MapContainer from './components/MapInput';
 import MapView, { Marker } from 'react-native-maps';
 //import MainContainer from './containers/tabContainer';
 //import { NavigationContainer } from '@react-navigation/native';
@@ -13,6 +12,7 @@ import Info_card from '../components/Info_card';
 import { Root, SPSheet } from 'react-native-popup-confirm-toast'
 import Submit from '../components/Submit'
 import SoundPlayer from 'react-native-sound-player'
+import Geolocation from '@react-native-community/geolocation';
 
 const Map = () =>
 {
@@ -21,7 +21,8 @@ const Map = () =>
   const [title, setTitle] = useState('')
   const [photo, setPhoto] = useState('')
 
-  const component = (props) =>
+
+const component = (props) =>
   {
     key = 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M'
     url = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+photo+'&sensor=false&maxheight=500&maxwidth=500&key='+key
@@ -71,10 +72,45 @@ const Map = () =>
   }
   }
 
-  const openModal = () =>
-  {
+  // users current geo location
+  let currentLatidude;
+  let currentLongitude;
+  let locationAccuracy;
+
+  // options for Geolocation postion retrieval
+  const options = {
+    timeout: 2000,
+  };
+
+  // The region used to center the map and marker
+  const [region, setRegion] = useState({
+    latitude: 37.78825,
+    longitude: -122.4324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  // Get current user location
+  function getUserLocation() {
+    Geolocation.getCurrentPosition(
+      onSuccess,
+      error => console.log("ERROR", error),
+      options
+    );
+  }
+  function onSuccess(position) {
+
+    const coordinates = position.coords;
+    currentLatidude = coordinates.latitude;
+    currentLongitude = coordinates.longitude;
+    locationAccuracy = coordinates.accuracy;
 
   }
+
+  getUserLocation();
+  return (
+
+  
   const markerClick = (e) =>
   {
 
@@ -85,6 +121,9 @@ const Map = () =>
       <View style={styles.container}>
 
         <MapView
+
+          region={region}
+          //onRegionChangeComplete={onRegionChange}
           style={styles.mapStyle}
           initialRegion={{
             latitude: 37.78825,
@@ -96,8 +135,8 @@ const Map = () =>
           <Marker
             draggable
             coordinate={{
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: region.latitude,
+              longitude: region.longitude,
             }}
             onDragEnd={e => alert(JSON.stringify(e.nativeEvent.coordinate))}
             title={'Test Marker'}
@@ -122,13 +161,11 @@ const Map = () =>
             styles={{ textInput: styles.input }}
             placeholder="Search"
             fetchDetails={true}
-            onPress={(data, details = null) =>
-            {
-              // 'details' is provided when fetchDetails = true
+            onPress={(data, details = null) => {
+
               setTitle(data.description)
               setPhoto(details.photos[0].photo_reference)
-              console.log('\n\n', data, '\n\n', details);
-
+              
               const spSheet = SPSheet;
               spSheet.show({
                 component: () => component({ ...this.props, spSheet }),
@@ -143,6 +180,38 @@ const Map = () =>
                   console.log('onOpenComplete');
                 },
                 height: 260
+                
+                
+              // get the data from fetch
+              locationData = {
+                place_id: details.place_id,
+                address: details.formatted_address,
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                photos: details.photos
+              };
+
+              // Get picture URL's
+              let picURLs = [];
+              for (let key in locationData.photos) {
+
+                let googleURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth="
+                let height = locationData.photos[key]["height"];
+                let width = locationData.photos[key]["width"];
+                let photo_reference = locationData.photos[key]["photo_reference"];
+                let API_KEY = "AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M"
+                googleURL += width + "&maxheight=" + height + "&photo_reference=" + photo_reference + "&key=" + API_KEY;
+
+                picURLs.push(googleURL + "\n");
+              };
+
+              // set the map to the searched region
+              setRegion({
+                latitude: locationData.latitude,
+                longitude: locationData.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+                
               });
 
             }}
@@ -154,6 +223,7 @@ const Map = () =>
         </View>
       </View>
     </SafeAreaView>
+
   );
 };
 
