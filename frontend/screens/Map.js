@@ -2,7 +2,7 @@
 // https://aboutreact.com/react-native-map-example/// Import React
 import React, { useState } from 'react';
 // Import required components
-import { SafeAreaView, StyleSheet, TextInput, View, Modal, Text, TouchableOpacity, Image } from 'react-native'; // Import Map and Marker
+import { SafeAreaView, StyleSheet, TextInput, View, Modal, Text, TouchableOpacity, Image, ScrollView } from 'react-native'; // Import Map and Marker
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { StatusBar } from 'react-native';
 //import MapContainer from './components/MapInput';
@@ -21,18 +21,19 @@ const Map = () =>
   const [title, setTitle] = useState('')
   const [photo, setPhoto] = useState('')
 
-  const small_info_card = (props) =>
+  const component = (props) =>
   {
     key = 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M'
     url = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+photo+'&sensor=false&maxheight=500&maxwidth=500&key='+key
     
     //hook or class 
-    return (<View>
+    return (<ScrollView>
         <Text style={styles.title}>{title}</Text>
         <Image style={styles.photo} source={{uri: url,}}></Image>
         <Submit title="Travel Guides" color="#0148a4" handleSubmit={fetchAudio}></Submit>
-        
-      </View>);
+        <Submit title="Get track info" color="#0148a4" handleSubmit={fetchAudio}></Submit>
+
+      </ScrollView>);
     // place.photos.forEach(function (placePhoto)
     // {
     //   var url = placePhoto.getUrl({
@@ -41,6 +42,15 @@ const Map = () =>
     //   });
     // });
   };
+
+  const fetchAudioInfo = async () =>{
+  try {
+              const info = await SoundPlayer.getInfo() // Also, you need to await this because it is async
+              console.log('getInfo', info) // {duration: 12.416, currentTime: 7.691}
+            } catch (e) {
+              console.log('There is no song playing', e)
+            }
+  }
 
   const fetchAudio = async () =>{
     try {
@@ -121,7 +131,7 @@ const Map = () =>
 
               const spSheet = SPSheet;
               spSheet.show({
-                small_info_card: () => small_info_card({ ...this.props, spSheet }),
+                component: () => component({ ...this.props, spSheet }),
                 dragFromTopOnly: true,
                 height: 500,
                 onCloseComplete: () =>
@@ -137,7 +147,7 @@ const Map = () =>
 
             }}
             query={{
-              key: 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M', // What is this key from and for?
+              key: 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M',
               language: 'en',
             }}
           />
