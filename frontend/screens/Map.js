@@ -2,7 +2,7 @@
 // https://aboutreact.com/react-native-map-example/// Import React
 import React, { useState } from 'react';
 // Import required components
-import { Text, SafeAreaView, StyleSheet, TextInput, View, Text, TouchableOpacity,  Image, ScrollView, PermissionsAndroid } from 'react-native';// Import Map and Marker
+import { Text, SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity,  Image, ScrollView, PermissionsAndroid } from 'react-native';// Import Map and Marker
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { StatusBar } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
@@ -26,13 +26,13 @@ const component = (props) =>
   {
     key = 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M'
     url = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+photo+'&sensor=false&maxheight=500&maxwidth=500&key='+key
-    
+    console.log("PHOTO: ",photo)
     //hook or class 
     return (<ScrollView>
         <Text style={styles.title}>{title}</Text>
         <Image style={styles.photo} source={{uri: url,}}></Image>
         <Submit title="Travel Guides" color="#0148a4" handleSubmit={fetchAudio}></Submit>
-        <Submit title="Get track info" color="#0148a4" handleSubmit={fetchAudio}></Submit>
+        <Submit title="Get track info" color="#0148a4" handleSubmit={fetchAudioInfo}></Submit>
 
       </ScrollView>);
     // place.photos.forEach(function (placePhoto)
@@ -57,16 +57,12 @@ const component = (props) =>
     try {
       console.log("Trying to play audio");
       // play the file tone.mp3
-      SoundPlayer.playSoundFile('tune', 'mp3');
+      //SoundPlayer.playSoundFile('sound', 'mp3');
+
       console.log("Playing");
       // or play from url
-      //SoundPlayer.playUrl('https://storage.googleapis.com/guidify_bucket/12345.mpeg')
-      try {
-            const info = await SoundPlayer.getInfo() // Also, you need to await this because it is async
-            console.log('getInfo', info) // {duration: 12.416, currentTime: 7.691}
-          } catch (e) {
-            console.log('There is no song playing', e)
-          }
+      SoundPlayer.playUrl('https://storage.googleapis.com/guidify_bucket/12345.mpeg')
+      SoundPlayer.seek(5);
   } catch (e) {
       console.log(`cannot play the sound file`, e);
   }
@@ -108,13 +104,6 @@ const component = (props) =>
   }
 
   getUserLocation();
-  return (
-
-  
-  const markerClick = (e) =>
-  {
-
-  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -180,7 +169,7 @@ const component = (props) =>
                   console.log('onOpenComplete');
                 },
                 height: 260
-                
+                })
                 
               // get the data from fetch
               locationData = {
