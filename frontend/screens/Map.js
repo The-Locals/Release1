@@ -20,7 +20,8 @@ const Map = () =>
   const [modalOpen, setModalOpen] = useState(true);
   const [title, setTitle] = useState('')
   const [photo, setPhoto] = useState('')
-  const component = (props) =>
+
+  const small_info_card = (props) =>
   {
     key = 'AIzaSyBdUF2aSzhP3mzuRhFXZwl5lxBTavQnH7M'
     url = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+photo+'&sensor=false&maxheight=500&maxwidth=500&key='+key
@@ -120,7 +121,7 @@ const Map = () =>
 
               const spSheet = SPSheet;
               spSheet.show({
-                component: () => component({ ...this.props, spSheet }),
+                small_info_card: () => small_info_card({ ...this.props, spSheet }),
                 dragFromTopOnly: true,
                 height: 500,
                 onCloseComplete: () =>
